@@ -1,30 +1,30 @@
-var makeRequest = function(url, url, callback) {
-  var request1 = new XMLHttpRequest();
-  request1.open("GET", url1);
-  request1.setRequestHeader("X-Auth-Token", "6be9d92146704edcab7842f097984a91");
-  request1.onload = callback;
-  request1.send();
-  var request2 = new XMLHttpRequest();
-  request2.open("GET", url2);
-  request2.setRequestHeader("X-Auth-Token", "6be9d92146704edcab7842f097984a91");
-  request2.onload = callback;
-  request2.send();
+var makeRequest = function(url, callback) {
+  var request = new XMLHttpRequest();
+  request.open("GET", url);
+  request.setRequestHeader("X-Auth-Token", "6be9d92146704edcab7842f097984a91");
+  request.onload = callback;
+  request.send();
 };
 
-var requestComplete = function() {
+var requestCompleteTeams = function() {
   if(this.status !== 200) {
     return;
   }
 
   var jsonString1 = this.responseText;
   var teams = JSON.parse(jsonString1).teams;
-  var jsonString2 = this.responseText;
-  var players = JSON.parse(jsonString2).players;
 
   showTeams(teams);
   console.log(teams);
-  showPlayers(players);
-  console.log(players);
+
+  var url = "http://api.football-data.org/v1/teams/322/players";
+  makeRequest(url, requestCompletePlayers);
+
+  // var request2 = new XMLHttpRequest();
+  // request2.open("GET", url2);
+  // request2.setRequestHeader("X-Auth-Token", "6be9d92146704edcab7842f097984a91");
+  // request2.onload = callback;
+  // request2.send();
 };
 
 var showTeams = function(teams) { 
@@ -67,6 +67,19 @@ var showTeamInfo = function(teams) {
   pTag5.innerText = "Players: " + team.players;
 }
 
+var requestCompletePlayers = function() {
+  if(this.status !== 200) {
+    return;
+  }
+
+  var jsonString = this.responseText;
+  var players = JSON.parse(jsonString).players;
+
+  showPlayers(players);
+  console.log(players);
+
+};
+
 
 var showPlayers = function(players) { 
   // var div = document.getElementById('players');
@@ -108,12 +121,12 @@ var showPlayers = function(players) {
 
 
 var app = function() {
-  var url1 = "http://api.football-data.org/v1/competitions/426/teams";
-  var url2 = "http://api.football-data.org/v1/teams/322/players";
+  var url = "http://api.football-data.org/v1/competitions/426/teams";
+  // var url2 = "http://api.football-data.org/v1/teams/322/players";
 
   var select = document.querySelector('select');
   select.onclick = function() {
-    makeRequest(url1, url2, requestComplete);
+    makeRequest(url, requestCompleteTeams);
   };
 }
 
