@@ -6,7 +6,7 @@ var makeRequest = function(url, callback) {
   request.send();
 };
 
-var requestCompleteTeams = function() {
+var requestCompleteTeams = function(teamId) {
   if(this.status !== 200) {
     return;
   }
@@ -17,14 +17,7 @@ var requestCompleteTeams = function() {
   showTeams(teams);
   console.log(teams);
 
-  var url = "http://api.football-data.org/v1/teams/322/players";
-  makeRequest(url, requestCompletePlayers);
-
-  // var request2 = new XMLHttpRequest();
-  // request2.open("GET", url2);
-  // request2.setRequestHeader("X-Auth-Token", "6be9d92146704edcab7842f097984a91");
-  // request2.onload = callback;
-  // request2.send();
+  
 };
 
 var showTeams = function(teams) { 
@@ -47,8 +40,11 @@ var showTeams = function(teams) {
   };
 };
 
-var showTeamInfo = function(teams) {
-  console.log(teams);
+var showTeamInfo = function(team) {
+  //TODO: clear previous info
+  console.log(team._links.players.href);
+  var url = team._links.players.href;
+  makeRequest(url, requestCompletePlayers);
   // DOM stuff
   var pTag1 = document.querySelector('#select-result1');
   console.log(team.name);
@@ -62,9 +58,6 @@ var showTeamInfo = function(teams) {
 
   var pTag4 = document.querySelector('#select-result4');
   pTag4.innerHTML = '<a href="'+ team.crestUrl + '">badge</a>';
-
-  var pTag5 = document.querySelector('#select-result5');
-  pTag5.innerText = "Players: " + team.players;
 }
 
 var requestCompletePlayers = function() {
@@ -87,15 +80,15 @@ var showPlayers = function(players) {
   players.forEach(function(player) {
     var liName = document.createElement('li');
     liName.innerText = player.name;
-    var liPosition = document.getElementById('li');
+    var liPosition = document.createElement('li');
     liPosition.innerText = player.position;
-    var liJerseyNo = document.getElementById('li');
+    var liJerseyNo = document.createElement('li');
     liJerseyNo.innerText = player.jerseyNumber;
-    var liDOB = document.getElementById('li');
+    var liDOB = document.createElement('li');
     liDOB.innerText = player.dateOfBirth;
-    var liNationality = document.getElementById('li');
+    var liNationality = document.createElement('li');
     liNationality.innerText = player.dateOfBirth;
-    var liWorth = document.getElementById('li');
+    var liWorth = document.createElement('li');
     liWorth.innerText = player.marketValue;
     var ul = document.querySelector('#player-results');
     ul.appendChild(liName);
@@ -122,7 +115,6 @@ var showPlayers = function(players) {
 
 var app = function() {
   var url = "http://api.football-data.org/v1/competitions/426/teams";
-  // var url2 = "http://api.football-data.org/v1/teams/322/players";
 
   var select = document.querySelector('select');
   select.onclick = function() {
